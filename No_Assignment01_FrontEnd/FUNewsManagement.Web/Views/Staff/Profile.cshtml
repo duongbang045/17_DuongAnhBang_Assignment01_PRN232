@@ -1,0 +1,38 @@
+@model FUNewsManagement.Web.Models.UpdateProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="mb-4">
+            <h2><i class="bi bi-person-fill-gear"></i> My Profile</h2>
+            <p class="text-muted mb-0">Update your personal information</p>
+        </div>
+        <form asp-controller="Staff" asp-action="Profile" method="post" class="card shadow-sm">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger m-3"></div>
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <label asp-for="AccountName" class="form-label fw-bold">Full Name <span class="text-danger">*</span></label>
+                    <input asp-for="AccountName" class="form-control form-control-lg" maxlength="100" />
+                    <span asp-validation-for="AccountName" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="AccountEmail" class="form-label fw-bold">Email <span class="text-danger">*</span></label>
+                    <input asp-for="AccountEmail" type="email" class="form-control form-control-lg" maxlength="70" />
+                    <span asp-validation-for="AccountEmail" class="text-danger small"></span>
+                </div>
+                <div class="mb-0">
+                    <label asp-for="AccountPassword" class="form-label fw-bold">New Password</label>
+                    <input asp-for="AccountPassword" type="password" class="form-control form-control-lg" maxlength="70" />
+                    <small class="text-muted">Leave blank to keep current password.</small>
+                    <span asp-validation-for="AccountPassword" class="text-danger small d-block"></span>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-check2-circle"></i> Save Profile</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+@model FUNewsManagement.Web.Models.NewsArticleDetailViewModel
+@{
+    ViewData["Title"] = Model?.Headline ?? "News Details";
+}
+
+@if (Model != null)
+{
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i> Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">News Details</li>
+        </ol>
+    </nav>
+
+    <article class="card shadow-sm">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span class="badge bg-info fs-6"><i class="bi bi-folder"></i> @(Model.CategoryName ?? "Uncategorized")</span>
+                <span class="text-muted"><i class="bi bi-calendar3"></i> @Model.CreatedDate?.ToString("dddd, MMMM dd, yyyy HH:mm")</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <h1 class="card-title">@Model.Headline</h1>
+            @if (!string.IsNullOrEmpty(Model.NewsTitle) && Model.NewsTitle != Model.Headline)
+            {
+                <h4 class="text-muted mb-4">@Model.NewsTitle</h4>
+            }
+            <p class="mb-4">
+                <span class="badge bg-success"><i class="bi bi-person"></i> By @(Model.CreatedByName ?? "Unknown")</span>
+                @if (Model.ModifiedDate.HasValue)
+                {
+                    <span class="text-muted ms-3"><i class="bi bi-pencil"></i> Updated: @Model.ModifiedDate.Value.ToString("MMM dd, yyyy")</span>
+                }
+            </p>
+            @if (Model.Tags != null && Model.Tags.Any())
+            {
+                <div class="mb-4">
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <span class="badge bg-secondary tag-badge fs-6"><i class="bi bi-tag"></i> @tag.TagName</span>
+                    }
+                </div>
+            }
+            <hr />
+            <div class="news-content">
+                <p style="white-space: pre-line; line-height: 1.8; font-size: 1.1rem;">@Model.NewsContent</p>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.NewsSource) && Model.NewsSource != "N/A")
+            {
+                <div class="mt-4 p-3 bg-light rounded">
+                    <strong><i class="bi bi-link-45deg"></i> Source:</strong> @Model.NewsSource
+                </div>
+            }
+        </div>
+    </article>
+
+    <div class="mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to News List</a>
+    </div>
+}
+else
+{
+    <div class="text-center py-5 bg-light rounded">
+        <i class="bi bi-x-circle display-1 text-danger"></i>
+        <h3 class="text-danger mt-3">News article not found</h3>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3"><i class="bi bi-house"></i> Back to Home</a>
+    </div>
+}

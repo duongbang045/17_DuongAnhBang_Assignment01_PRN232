@@ -1,0 +1,76 @@
+@model IEnumerable<FUNewsManagement.Web.Models.NewsArticleDetailViewModel>
+@{
+    ViewData["Title"] = "My News History";
+}
+
+<div class="mb-4">
+    <h2><i class="bi bi-clock-history"></i> My News History</h2>
+    <p class="text-muted mb-0">All news articles created by you (sorted by newest first)</p>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Created Date</th>
+                        <th>Headline</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Tags</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var na in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@na.CreatedDate?.ToString("MM/dd/yyyy")</strong>
+                                <small class="text-muted d-block">@na.CreatedDate?.ToString("HH:mm")</small>
+                            </td>
+                            <td>
+                                <div><strong>@na.Headline</strong></div>
+                                @if (!string.IsNullOrEmpty(na.NewsTitle) && na.NewsTitle != na.Headline)
+                                { <small class="text-muted">@na.NewsTitle</small> }
+                            </td>
+                            <td><span class="badge bg-info">@(na.CategoryName ?? "N/A")</span></td>
+                            <td>
+                                @if (na.NewsStatus == true)
+                                { <span class="badge bg-success status-active"><i class="bi bi-check-circle"></i> Active</span> }
+                                else
+                                { <span class="badge bg-danger status-inactive"><i class="bi bi-x-circle"></i> Inactive</span> }
+                            </td>
+                            <td>
+                                @if (na.Tags != null && na.Tags.Any())
+                                {
+                                    @foreach (var t in na.Tags.Take(3))
+                                    { <span class="badge bg-secondary tag-badge">@t.TagName</span> }
+                                }
+                                else
+                                { <span class="text-muted">-</span> }
+                            </td>
+                            <td class="text-center">
+                                <a asp-controller="Staff" asp-action="UpdateNews" asp-route-id="@na.NewsArticleID" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center py-5 bg-light rounded">
+        <i class="bi bi-inbox display-1 text-muted"></i>
+        <h3 class="mt-3 text-muted">You haven't created any news articles yet.</h3>
+        <a asp-controller="Staff" asp-action="CreateNews" class="btn btn-primary mt-3">
+            <i class="bi bi-plus-circle"></i> Create Your First Article
+        </a>
+    </div>
+}

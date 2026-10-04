@@ -1,0 +1,201 @@
+@model IEnumerable<FUNewsManagement.Web.Models.SystemAccount>
+@{
+    ViewData["Title"] = "Account Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2><i class="bi bi-people-fill"></i> Account Management</h2>
+        <p class="text-muted mb-0">Manage all system accounts</p>
+    </div>
+    <div class="d-flex gap-2">
+        <form asp-controller="Admin" asp-action="Accounts" method="get" class="d-flex gap-2">
+            <input type="text" name="keyword" class="form-control" placeholder="Search by name or email..." value="@ViewBag.Keyword" />
+            <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
+            <a asp-controller="Admin" asp-action="Accounts" class="btn btn-outline-secondary"><i class="bi bi-arrow-clockwise"></i></a>
+        </form>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+            <i class="bi bi-plus-circle"></i> New Account
+        </button>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var acc in Model)
+                    {
+                        <tr>
+                            <td>@acc.AccountID</td>
+                            <td>@acc.AccountName</td>
+                            <td>@acc.AccountEmail</td>
+                            <td>
+                                @if (acc.AccountRole == 1)
+                                { <span class="badge bg-primary">Staff</span> }
+                                else if (acc.AccountRole == 2)
+                                { <span class="badge bg-info">Lecturer</span> }
+                                else
+                                { <span class="badge bg-secondary">Unknown</span> }
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal" data-bs-target="#editAccountModal"
+                                        data-id="@acc.AccountID"
+                                        data-name="@acc.AccountName"
+                                        data-email="@acc.AccountEmail"
+                                        data-role="@acc.AccountRole"
+                                        data-password="@acc.AccountPassword">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                        data-bs-toggle="modal" data-bs-target="#deleteAccountModal"
+                                        data-id="@acc.AccountID"
+                                        data-name="@acc.AccountName">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="5" class="text-center py-5 text-muted"><i class="bi bi-inbox"></i> No accounts found</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form asp-controller="Admin" asp-action="CreateAccount" method="post" class="modal-content">
+            @Html.AntiForgeryToken()
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Create New Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Account Name</label>
+                    <input asp-for="@Model.FirstOrDefault().AccountName" name="AccountName" class="form-control" required maxlength="100" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <input asp-for="@Model.FirstOrDefault().AccountEmail" name="AccountEmail" type="email" class="form-control" required maxlength="70" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Role</label>
+                    <select asp-for="@Model.FirstOrDefault().AccountRole" name="AccountRole" class="form-select" required>
+                        <option value="1">Staff</option>
+                        <option value="2">Lecturer</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Password <small class="text-muted">(leave empty for default @@1)</small></label>
+                    <input asp-for="@Model.FirstOrDefault().AccountPassword" name="AccountPassword" type="text" class="form-control" maxlength="70" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success"><i class="bi bi-check"></i> Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form asp-controller="Admin" asp-action="UpdateAccount" method="post" class="modal-content">
+            @Html.AntiForgeryToken()
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-pencil"></i> Edit Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editAccountID" name="AccountID" />
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Account Name</label>
+                    <input type="text" id="editAccountName" name="AccountName" class="form-control" required maxlength="100" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <input type="email" id="editAccountEmail" name="AccountEmail" class="form-control" required maxlength="70" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Role</label>
+                    <select id="editAccountRole" name="AccountRole" class="form-select" required>
+                        <option value="1">Staff</option>
+                        <option value="2">Lecturer</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Password <small class="text-muted">(enter to update)</small></label>
+                    <input type="text" id="editAccountPassword" name="AccountPassword" class="form-control" maxlength="70" />
+                    <small class="text-muted">Current password is shown above for reference. Re-enter to keep, or change.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i> Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form asp-controller="Admin" asp-action="DeleteAccount" method="post" class="modal-content">
+            @Html.AntiForgeryToken()
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="deleteAccountID" name="id" />
+                <p class="mb-0">Are you sure you want to delete account <strong id="deleteAccountName"></strong>?</p>
+                <div class="alert alert-warning mt-3 mb-0">
+                    <i class="bi bi-info-circle"></i> Deletion will fail if this account has created any news articles.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Yes, Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+const editModal = document.getElementById('editAccountModal');
+editModal.addEventListener('show.bs.modal', (e) => {
+    const btn = e.relatedTarget;
+    document.getElementById('editAccountID').value = btn.dataset.id;
+    document.getElementById('editAccountName').value = btn.dataset.name;
+    document.getElementById('editAccountEmail').value = btn.dataset.email;
+    document.getElementById('editAccountRole').value = btn.dataset.role;
+    document.getElementById('editAccountPassword').value = btn.dataset.password;
+});
+const delModal = document.getElementById('deleteAccountModal');
+delModal.addEventListener('show.bs.modal', (e) => {
+    const btn = e.relatedTarget;
+    document.getElementById('deleteAccountID').value = btn.dataset.id;
+    document.getElementById('deleteAccountName').textContent = btn.dataset.name;
+});
+</script>
+}
