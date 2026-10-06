@@ -1,7 +1,0 @@
-<Solution>
-  <Project Path="17_DuongAnhBang_assignment01_backend/FUNewsManagement.API/FUNewsManagement.API.csproj" />
-  <Project Path="17_DuongAnhBang_assignment01_backend/FUNewsManagement.Models/FUNewsManagement.Models.csproj" />
-  <Project Path="17_DuongAnhBang_assignment01_backend/FUNewsManagement.Repositories/FUNewsManagement.Repositories.csproj" />
-  <Project Path="17_DuongAnhBang_assignment01_backend/FUNewsManagement.Services/FUNewsManagement.Services.csproj" />
-  <Project Path="17_DuongAnhBang_assignment01_frontend/FUNewsManagement.Web/FUNewsManagement.Web.csproj" />
-</Solution>

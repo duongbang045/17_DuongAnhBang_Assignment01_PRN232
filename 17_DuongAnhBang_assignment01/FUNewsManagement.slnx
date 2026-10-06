@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="backend/FUNewsManagement.API/FUNewsManagement.API.csproj" />
+  <Project Path="backend/FUNewsManagement.Models/FUNewsManagement.Models.csproj" />
+  <Project Path="backend/FUNewsManagement.Repositories/FUNewsManagement.Repositories.csproj" />
+  <Project Path="backend/FUNewsManagement.Services/FUNewsManagement.Services.csproj" />
+  <Project Path="frontend/FUNewsManagement.Web/FUNewsManagement.Web.csproj" />
+</Solution>
